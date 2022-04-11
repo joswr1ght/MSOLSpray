@@ -1,3 +1,5 @@
+# vim:ff=dos ts=4 ss=4
+
 function Invoke-MSOLSpray{
 
 <#
