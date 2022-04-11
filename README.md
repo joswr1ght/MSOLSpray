@@ -1,7 +1,11 @@
 # MSOLSpray
-A password spraying tool for Microsoft Online accounts (Azure/O365). The script logs if a user cred is valid, if MFA is enabled on the account, if a tenant doesn't exist, if a user doesn't exist, if the account is locked, or if the account is disabled. 
+
+A password spraying tool for Microsoft Online accounts (Azure/O365). The script logs if a user cred is valid, if MFA is enabled on the account, if a tenant doesn't exist, if a user doesn't exist, if the account is locked, or if the account is disabled.
 
 BE VERY CAREFUL NOT TO LOCKOUT ACCOUNTS!
+
+## Updates
+This is [@dafthack](https://github.com/dafthack/MSOLSpray)'s work, I'm just making maintenance fixes and merging in PR's from the community. See `CONTRIBUTORS` for details.
 
 ## Why another spraying tool?
 Yes, I realize there are other password spraying tools for O365/Azure. The main difference with this one is that this tool not only is looking for valid passwords, but also the extremely verbose information Azure AD error codes give you. These error codes provide information relating to if MFA is enabled on the account, if a tenant doesn't exist, if a user doesn't exist, if the account is locked, if the account is disabled, if the password is expired and much more.
