@@ -216,12 +216,11 @@ function Invoke-MSOLSpray {
     }
 
     # Output to file
-    If ($OutFile -ne "") {
-        If ($fullresults)
-        {
-        $fullresults | Out-File -Encoding ascii $OutFile
-        Write-Output "Results have been written to $OutFile."
+    If ($OutFile -ne '') {
+        If ($fullresults) {
+            $fullresults | Out-File -Encoding ascii $OutFile
+            Write-Output "Results have been written to $OutFile."
         }
     }
-    Write-Host ""
+    Write-Host ''
 }
